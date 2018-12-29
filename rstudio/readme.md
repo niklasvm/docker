@@ -5,6 +5,8 @@ This dockerfile can be used to build a data-science focussed image.
 Starts with a versioned `rocker/verse` image and adds the following installations:
 
   * pip
+  * htop
+  * nano
   * pre-release rstudio-server
   * aws cli
   * h2o
