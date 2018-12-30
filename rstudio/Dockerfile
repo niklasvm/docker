@@ -38,16 +38,18 @@ RUN MRAN=https://mran.microsoft.com/snapshot/${BUILD_DATE} && \
 RUN R -e 'install.packages("h2o", type="source", repos=(c("http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R")))'
 
 # install spark
-RUN R -e "install.packages('sparklyr')"
-RUN R -e "sparklyr::spark_install(version='${SPARK_VERSION}',verbose=T)"
-RUN mv /root/spark /opt/ && \
+RUN R -e "install.packages('sparklyr')" && \
+  R -e "sparklyr::spark_install(version='${SPARK_VERSION}',verbose=T)" && \
+  mv /root/spark /opt/ && \
   chown -R rstudio:rstudio /opt/spark/ && \
-  ln -s /opt/spark/ /home/rstudio/
-RUN cp /opt/spark/spark-${SPARK_VERSION}-bin-hadoop2.7/conf/spark-env.sh.template /opt/spark/spark-${SPARK_VERSION}-bin-hadoop2.7/conf/spark-env.sh && \
+  ln -s /opt/spark/ /home/rstudio/ && \
+  cp /opt/spark/spark-${SPARK_VERSION}-bin-hadoop2.7/conf/spark-env.sh.template /opt/spark/spark-${SPARK_VERSION}-bin-hadoop2.7/conf/spark-env.sh && \
   echo 'SPARK_LOCAL_IP=0.0.0.0' >> /opt/spark/spark-${SPARK_VERSION}-bin-hadoop2.7/conf/spark-env.sh
 
 # install keras
-# RUN R -e "install.packages('keras'); keras::install_keras()"
+RUN R -e "install.packages('keras')" && \
+  pip install virtualenv && \
+  su - rstudio -c "R -e \"keras::install_keras()\""
 
 # install aws cli for rstudio user
 USER rstudio
