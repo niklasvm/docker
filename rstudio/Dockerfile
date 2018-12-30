@@ -39,7 +39,12 @@ RUN R -e 'install.packages("h2o", type="source", repos=(c("http://h2o-release.s3
 
 # install spark
 RUN R -e "install.packages('sparklyr')"
-RUN su - rstudio -c "R -e \"sparklyr::spark_install(version='${SPARK_VERSION}')\""
+RUN R -e "sparklyr::spark_install(version='${SPARK_VERSION}',verbose=T)"
+RUN mv /root/spark /opt/ && \
+  chown -R rstudio:rstudio /opt/spark/ && \
+  ln -s /opt/spark/ /home/rstudio/
+RUN cp /opt/spark/spark-${SPARK_VERSION}-bin-hadoop2.7/conf/spark-env.sh.template /opt/spark/spark-${SPARK_VERSION}-bin-hadoop2.7/conf/spark-env.sh && \
+  echo 'SPARK_LOCAL_IP=0.0.0.0' >> /opt/spark/spark-${SPARK_VERSION}-bin-hadoop2.7/conf/spark-env.sh
 
 # install keras
 # RUN R -e "install.packages('keras'); keras::install_keras()"
@@ -63,7 +68,7 @@ ENV PATH="${PATH}:/home/rstudio/.local/bin"
 #  git config --global user.name "${GITHUB_USER_NAME}" && \
 #  git config --global core.fileMode false
 
+
+
 # ports
-EXPOSE 8787
-EXPOSE 3838
-EXPOSE 4040
+EXPOSE 8787 4040 3838
