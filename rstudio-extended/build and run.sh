@@ -1,7 +1,7 @@
 #!/bin/bash
 
 docker image build \
-  --tag niklasvm/rstudio \
+  --tag niklasvm/rstudio-extended \
   --build-arg GITHUB_USER_NAME='niklasvm' \
   --build-arg GITHUB_USER_EMAIL='niklasvm@gmail.com' \
   .
@@ -18,7 +18,7 @@ docker run \
   -it -d \
   -p 8787:8787 \
   -p 4040:4040 \
-  niklasvm/rstudio;
+  niklasvm/rstudio-extended;
 
 # ssh in as rstudio user
 # docker exec -ti --user rstudio ${CONTAINER_NAME} bash;
