@@ -1,6 +1,6 @@
 # rstudio
 
-This dockerfile can be used to build a data-science focussed image.
+This dockerfile can be used to build an R-based data-science focussed docker image.
 
 Starts with a versioned `rocker/verse` image and adds the following installations:
 
@@ -14,8 +14,6 @@ Starts with a versioned `rocker/verse` image and adds the following installation
   * keras
   * shiny
 
-Additionally it:
-  * copies over an `.Renviron` containing any necessary credentials that need to be stored outside of the code
   * copies over `id_rsa` your github private to configure using rstudio's git integration when in a project
 
 Build arguments:
