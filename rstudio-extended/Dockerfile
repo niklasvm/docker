@@ -37,7 +37,7 @@ RUN MRAN=https://mran.microsoft.com/snapshot/${BUILD_DATE} && \
 # install latest h2o
 RUN R -e 'install.packages("h2o", type="source", repos=(c("http://h2o-release.s3.amazonaws.com/h2o/latest_stable_R")))'
 
-# install spark
+# install given spark version, create symbolic link and update SPARK_LOCAL_IP to expose WEB UI
 RUN R -e "install.packages('sparklyr')" && \
   R -e "sparklyr::spark_install(version='${SPARK_VERSION}',verbose=T)" && \
   mv /root/spark /opt/ && \
@@ -57,20 +57,8 @@ RUN pip install awscli --upgrade --user
 USER root
 ENV PATH="${PATH}:/home/rstudio/.local/bin"
 
-# copy development credentials
-# COPY /.Renviron /home/rstudio/.Renviron
-# RUN chmod 755 /home/rstudio/.Renviron
-
-# set up github credentials and config
-#COPY /id_rsa /home/rstudio/.ssh/id_rsa
-#RUN chown -R rstudio /home/rstudio/.ssh && \
-#  chmod 600 /home/rstudio/.ssh/id_rsa && \
-#  chmod 700 /home/rstudio/.ssh && \
-#  git config --global user.email "${GITHUB_USER_EMAIL}" && \
-#  git config --global user.name "${GITHUB_USER_NAME}" && \
-#  git config --global core.fileMode false
-
-
+# copy files
+COPY /setup_git.sh /setup_git.sh
 
 # ports
-EXPOSE 8787 4040 3838
+EXPOSE 8787 4040
